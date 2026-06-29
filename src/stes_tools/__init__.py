@@ -2,6 +2,7 @@ from .H2O_prop import density_water, specific_heat_water
 from .cost_functions import CAPEX_STES, OPEX_STES
 from .import_functions import data_import, PTES_geometry_import
 from .loss_simulation import STES
+from .temperature_map import *
 
 __all__ = [
     "density_water",
@@ -11,4 +12,5 @@ __all__ = [
     "data_import",
     "PTES_geometry_import",
     "STES",
+    "temperature_map"
 ]
