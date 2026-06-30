@@ -28,8 +28,11 @@ The python package stes-tools contains the cost data function and also the simul
 # density function
 >>> rho = density_water(25)
 >>> rho
+```
+```text
 997.0680068359376
-
+```
+```python
 # heat capacity function
 >>> c_p = specific_heat_water(25)
 >>> c_p
@@ -42,6 +45,8 @@ The python package stes-tools contains the cost data function and also the simul
 >>> CAPEX = st.CAPEX_STES('PTES', 'per_volume', 70000, T_min=45, T_max=85) * 70000
 >>> OPEX = CAPEX * st.OPEX_STES('PTES')
 >>> print("CAPEX of a PTES with a volume of 70000 m^3 and temperature range from 45°C to 85°C:", round(CAPEX), "CHF, OPEX of the same PTES:", round(OPEX), "CHF/a")
+```
+```text
 CAPEX of a PTES with a volume of 70000 m^3 and temperature range from 45°C to 85°C: 4522103 CHF, OPEX of the same PTES: 44560 CHF/a
 ```
 
