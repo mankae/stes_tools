@@ -43,13 +43,75 @@ The python package stes-tools contains the cost data function and also the simul
 ```text
 4181.562794921874
 ```
+**Example cost functions:**
 ```python
 # get the CAPEX and OPEX value of a PTES plant
 >>> CAPEX = st.CAPEX_STES('PTES', 'per_volume', 70000, T_min=45, T_max=85) * 70000
 >>> OPEX = CAPEX * st.OPEX_STES('PTES')
 >>> print("CAPEX of a PTES with a volume of 70000 m^3 and temperature range from 45°C to 85°C:", round(CAPEX), "CHF, OPEX of the same PTES:", round(OPEX), "CHF/a")
 ```
+**Output:**
 ```text
 CAPEX of a PTES with a volume of 70000 m^3 and temperature range from 45°C to 85°C: 4522103 CHF, OPEX of the same PTES: 44560 CHF/a
 ```
+**Example for heat loss simulation:**
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_absolute_error
+
+file_path = "dronninglund_data_2014.xlsx"
+
+dronninglund_PTES = st.PTES(*st.PTES_geometry_import(file_path), n_layers=32, T_min=12, T_max=90, T_ref=10)
+dronninglund_PTES.set_temperature_map(st.temperature_map(n_layers=32, T_min=12, T_mid=45, T_max=90, n_points=2000, stretch=1, sharpness=10, overlap=0.3, plot=False))
+
+data = st.data_import(file_path)
+Q_storage_2014 = data['Q_storage'].to_numpy() # Q_storage_2014 is used for validation of the PTES model for 2014.
+Q_storage_2014 = Q_storage_2014[30:] # the first 30 days are ignored because data quality is bad
+Q_storage_start_2014 = Q_storage_2014[0]
+Q_storage_end_2014 = Q_storage_2014[-1]
+
+# calculate the heat transfer coefficients of the PTES model based on the storage energy content for 2014.
+dronninglund_PTES.calculate_U_values_PTES(file_path, Q_storage_start_2014, Q_storage_end_2014, 0.56, 0.42, 0.02, 30, None)
+
+# simulate PTES for 2014.
+time_2014, Q_storage_sim_2014, Q_loss_sim_2014, Q_storage_ssm_2014 = dronninglund_PTES.simulate_PTES(file_path, Q_storage_start=Q_storage_start_2014, sim_start=30)
+
+# defining the starting point of the simulation for 2015-2017.
+Q_storage_start_2015_to_2017 = Q_storage_sim_2014[-1]
+
+new_file_path = "dronninglund_data_2015_to_2017.xlsx"
+
+# simulate PTES for 2015-2017.
+time_2015_to_2017, Q_storage_sim_2015_to_2017, Q_loss_sim_2015_to_2017, Q_storage_ssm_2015_to_2017 = dronninglund_PTES.simulate_PTES(new_file_path, Q_storage_start=Q_storage_start_2015_to_2017)
+
+# Combine the simulated storage energy content for 2014-2017.
+Q_storage_sim_2014_to_2017 = np.concatenate((Q_storage_sim_2014, Q_storage_sim_2015_to_2017))
+Q_storage_ssm_2014_to_2017 = np.concatenate((Q_storage_ssm_2014, Q_storage_ssm_2015_to_2017))
+time_2014_to_2017 = np.concatenate((time_2014, time_2015_to_2017))
+
+# Validation points for 2015-2017 based on the reported data at the end of each year.
+Q_storage_end_2014 = 1663 + Q_storage_start_2014
+Q_storage_end_2015 = Q_storage_end_2014 - 497
+Q_storage_end_2016 = Q_storage_end_2015 + 93
+Q_storage_end_2017 = Q_storage_end_2016 - 583
+
+# calculate the mean absolute percentage error (MAPE) between the simulated and reported storage energy content for 2014
+mape_2014 = mean_absolute_error(Q_storage_2014,Q_storage_sim_2014) / np.nanmean(Q_storage_2014) * 100
+
+# plotting
+plt.plot(time_2014, Q_storage_2014, label=r"$Q_{\mathrm{sto}}$", color="black", linestyle="dashed")
+plt.scatter([time_2014_to_2017[699],time_2014_to_2017[1065],time_2014_to_2017[1430]], [Q_storage_end_2015,Q_storage_end_2016,Q_storage_end_2017], color="black", marker="x", label="_nolegend_")
+plt.plot(time_2014_to_2017, Q_storage_sim_2014_to_2017, label=r"$Q_{\mathrm{sto,sim}}$", color="#C04F15", alpha=0.7)
+plt.plot(time_2014_to_2017, Q_storage_ssm_2014_to_2017, label=r"$Q_{\mathrm{sto,ssm}}$", color="#4E95D9", linestyle="dashed", alpha=0.9)
+plt.text(0.02, 0.975, f"MAPE = {mape_2014:.2f} %", transform=plt.gca().transAxes, fontsize=13, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+plt.xticks(rotation=90)
+plt.title("Energy Content Dronninglund 2014 - 2017")
+plt.ylabel(r"$Q_{\mathrm{sto}}$ [MWh]")
+plt.legend(loc="upper right", labelspacing=0.4)
+plt.grid()
+plt.show()
+```
+**Output:**
+![failed to load image](notebooks/dronninglund_demo.png)
 
