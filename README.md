@@ -126,3 +126,46 @@ The MAPE quantifies the deviation of the simulated data from the reported data
 
 ## Installation guide:
 
+1. Clone the repository from GitHub:
+
+```bash
+git clone https://github.com/mankae/techno-economic-stes-database.git
+```
+
+2. Move into the project folder:
+
+```bash
+cd techno-economic-stes-database
+```
+
+3. It is recommended to use a separate Python environment:
+
+```bash
+python -m venv .venv
+```
+
+Activate the environment.
+
+On Windows:
+```bash
+.venv\Scripts\activate
+```
+On Linux/macOS:
+```bash
+source .venv/bin/activate
+```
+
+4. Install the package in editable mode:
+```bash
+pip install -e .
+```
+
+5. The package can now be imported:
+```python
+import stes_tools as st
+```
+
+## Comment on used data:
+
+The references of the used data is mentioned in the code. The most important data sources were two git repositories containing PTES operational data ([Høje Taastrup](https://github.com/PitStorages/HojeTaastrupData), [Dronninglund](https://github.com/PitStorages/DronninglundData))
+
