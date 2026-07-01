@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def data_import(file_path):
     '''Imports data from an Excel file and returns a DataFrame
@@ -27,6 +28,14 @@ def data_import(file_path):
     df_data.index = pd.to_datetime(df_data.index)
 
     return df_data
+
+def extract_storage_temperature(data):
+    '''Extracts the storage temperature data from the DataFrame and returns it as a NumPy array'''
+
+    first_T = data.columns.get_loc('T_01')
+    T_storage = data.iloc[:, first_T:].to_numpy()
+
+    return T_storage
 
 def PTES_geometry_import(file_path):
     '''Imports geometry data from an Excel file and returns the parameters
