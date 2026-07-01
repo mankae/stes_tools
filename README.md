@@ -175,6 +175,7 @@ pip install -e ".[dev]"
 
 **Illustration where to create virtual environment**
 
+```markdown
  techno-economic-stes-database/ ← run commands 2. to 5. here
   │
   ├── .venv/                    ← created in step 3.
@@ -185,6 +186,7 @@ pip install -e ".[dev]"
   ├── src/
   │   └── stes_tools/
   └── notebooks/
+```
 
 ## Comment on used data:
 
