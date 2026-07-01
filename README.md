@@ -9,7 +9,7 @@ There is also a simulation framework for simple heat-loss modeling of PTES and T
 $$Q_{\mathrm{sto,t+1}}=\eta_{\mathrm{self}} \cdot Q_{\mathrm{sto,t}}+\left(\eta_{\mathrm{ch}} \cdot \dot{Q}_{\mathrm{ch}} -\frac{\dot{Q}_{\mathrm{disch}}}{\eta_{\mathrm{disch}}}\right) \cdot \Delta t$$
 
 The python package stes-tools contains the cost data function and also the simulation framework to simulate heat loss of PTES and TTES. The following functions are contained within the package:
-- density_water(T): Density (rho) of water in kg/m^3 based on fluid temperature (T) nearest the flow meter in degrees Celsius
+- density_water(T): Density (rho) of water in kg/m^3 based on fluid temperature (T) in degrees Celsius
 - specific_heat_water(T): Specific heat (cp) of water in J/(kg K) based on mean fluid temperature (T) in degrees Celsius
 - CAPEX_STES(technology, unit, capacity, T_min, T_max): CAPEX for a given type of STES (PTES, TTES, BTES, ATES) based on the capacity and the unit of the capacity.
 - OPEX_STES(technology): OPEX for a given type of STES (PTES, TTES, BTES, ATES)
@@ -24,19 +24,22 @@ The python package stes-tools contains the cost data function and also the simul
 - [Cost function data treatment and example](notebooks/CAPEX_OPEX_database_STES.ipynb)
 - [Heat loss simulation of PTES](notebooks/Heat_Loss_Simulation_of_PTES.ipynb)
 
+**Example for water property functions:**
 ```python
 # density function
->>> rho = density_water(25)
+>>> rho = st.density_water(25)
 >>> rho
 ```
+**Output [kg/m^3]:**
 ```text
 997.0680068359376
 ```
 ```python
 # heat capacity function
->>> c_p = specific_heat_water(25)
+>>> c_p = st.specific_heat_water(25)
 >>> c_p
 ```
+**Output [J/(kg·K)]:**
 ```text
 4181.562794921874
 ```
