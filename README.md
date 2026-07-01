@@ -114,7 +114,7 @@ plt.show()
 ```
 **Output:**
 
-<img src="notebooks/dronninglund_demo.png" alt="Dronninglund Demo" width="60%">
+<img src="figures/dronninglund_demo.png" alt="Dronninglund Demo" width="60%">
 - black-dashed: reported data
 - red: simulated data
 - blue-dashed: data calculated with the SSM
